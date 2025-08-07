@@ -37,5 +37,22 @@ spring:
         provider:
           google:
             user-name-attribute: email
+  cloud:
+    compatibility-verifier:
+      enabled: false
 server:
   port: 8000
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
