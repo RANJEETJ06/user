@@ -19,7 +19,6 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,14 +108,22 @@ public class UserServiceImpl extends DefaultOAuth2UserService implements UserSer
     }
 
     @Override
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public void saveUser(User user) {
+        userRepository.save(user);
     }
 
     @Override
     public User findByEmailOptional(String email) {
         Optional<User> userOptional = userRepository.findByEmail(email);
         return userOptional.orElse(null); // Return null instead of throwing exception
+    }
+
+    @Override
+    public boolean hasRole(Long userId, String roleName) {
+        return roleRepository.findByName(roleName)
+                .flatMap(role -> userRepository.findById(userId)
+                        .map(user -> user.getRoles().contains(role)))
+                .orElse(false);
     }
 
 }
